@@ -368,32 +368,32 @@ jobs:
 
 
 #Этап пятый -  жокер хаб)
-  dockerhub_publish:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Docker login
-        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_LOGIN }}" --password-stdin
-
-      - name: Read version
-        id: ver
-        shell: bash
-        run: |
-          v=$(tr -d '\r\n ' < version); v=${v#v}
-          echo "VERSION=$v" >> $GITHUB_OUTPUT
-
-      - name: Build image
-        run: docker build -t ${{ secrets.DOCKER_HUB_LOGIN }}/ci-cd-pipeline:v${{ steps.ver.outputs.VERSION }} .
-
-      - name: Push image
-        run: docker push ${{ secrets.DOCKER_HUB_LOGIN }}/ci-cd-pipeline:v${{ steps.ver.outputs.VERSION }}
-
-      - name: Add dockerhub label
-        if: github.event.pull_request != null
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+dockerhub_publish: 
+    runs-on: ubuntu-latest 
+    needs: build 
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository 
+    steps: 
+      - uses: actions/checkout@v4 
+ 
+      - name: Docker login 
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_LOGIN }}" --password-stdin 
+ 
+      - name: Read version 
+        id: ver 
+        shell: bash 
+        run: | 
+          v=$(tr -d '\r\n ' < version); v=${v#v} 
+          echo "VERSION=$v" >> $GITHUB_OUTPUT 
+ 
+      - name: Build image 
+        run: docker build -t ${{ secrets.DOCKER_HUB_LOGIN }}/ci-cd-pipeline:v${{ steps.ver.outputs.VERSION }} . 
+ 
+      - name: Push image 
+        run: docker push ${{ secrets.DOCKER_HUB_LOGIN }}/ci-cd-pipeline:v${{ steps.ver.outputs.VERSION }} 
+ 
+      - name: Add dockerhub label 
+        if: github.event.pull_request != null 
+        uses: actions-ecosystem/action-add-labels@v1 
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }} 
           labels: docker-published
