@@ -9,4 +9,3 @@ RUN dotnet publish src -c Release -o /app /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/runtime:8.0
 WORKDIR /app
 COPY --from=build /app .
-
